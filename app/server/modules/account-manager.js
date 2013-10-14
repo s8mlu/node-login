@@ -11,14 +11,14 @@ try {
   var dbHost 		= 'localhost';
   var dbName 		= 'node-login';
   var db = new MongoDB(dbName, new Server(dbHost, dbPort, {auto_reconnect: true}), {w: 1});
-	db.open(function(e, d){
+  db.open(function(e, d){
 	if (e) {
 		console.log(e);
 	}	else{
 		console.log('connected to database :: ' + dbName);
 	}
-  var accounts = db.collection('accounts');
-});
+    var accounts = db.collection('accounts');
+  });
 } catch (e) {
   console.log('warning: mongodb failed "' + e + '", fall back to using Nedb');
   var Nedb = require('nedb'),
