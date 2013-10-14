@@ -1,5 +1,5 @@
 
-var ES = require('./email-settings');
+var ES = require('./email-settings-mine.js');
 var EM = {};
 module.exports = EM;
 
@@ -25,13 +25,13 @@ EM.dispatchResetPasswordLink = function(account, callback)
 
 EM.composeEmail = function(o)
 {
-	var link = 'http://node-login.braitsch.io/reset-password?e='+o.email+'&p='+o.pass;
+	var link = 'http://samlu.dyndns.org:8088/reset-password?e='+o.email+'&p='+o.pass;
 	var html = "<html><body>";
 		html += "Hi "+o.name+",<br><br>";
 		html += "Your username is :: <b>"+o.user+"</b><br><br>";
 		html += "<a href='"+link+"'>Please click here to reset your password</a><br><br>";
 		html += "Cheers,<br>";
-		html += "<a href='http://twitter.com/braitsch'>braitsch</a><br><br>";
+		html += "Squawky";
 		html += "</body></html>";
 	return  [{data:html, alternative:true}];
 }

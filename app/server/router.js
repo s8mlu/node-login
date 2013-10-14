@@ -16,7 +16,8 @@ module.exports = function(app) {
 			AM.autoLogin(req.cookies.user, req.cookies.pass, function(o){
 				if (o != null){
 				    req.session.user = o;
-					res.redirect('/home');
+//					res.redirect('/home');
+					res.redirect('/secure/rover');
 				}	else{
 					res.render('login', { title: 'Hello - Please Login To Your Account' });
 				}
@@ -182,6 +183,6 @@ module.exports = function(app) {
 		});
 	});
 	
-	app.get('*', function(req, res) { res.render('404', { title: 'Page Not Found'}); });
+//	app.get('*', function(req, res) { res.render('404', { title: 'Page Not Found'}); });
 
 };
