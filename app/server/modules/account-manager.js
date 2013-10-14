@@ -10,6 +10,7 @@ var dbName 		= 'node-login';
 
 /* establish the database connection */
 
+/*
 var db = new MongoDB(dbName, new Server(dbHost, dbPort, {auto_reconnect: true}), {w: 1});
 	db.open(function(e, d){
 	if (e) {
@@ -19,6 +20,8 @@ var db = new MongoDB(dbName, new Server(dbHost, dbPort, {auto_reconnect: true}),
 	}
 });
 var accounts = db.collection('accounts');
+*/
+var Nedb = require('nedb'), accounts = new Nedb({ filename: dbName+'.db', autoload: true});
 
 /* login validation methods */
 
@@ -66,7 +69,8 @@ exports.addNewAccount = function(newData, callback)
 						newData.pass = hash;
 					// append date stamp when record was created //
 						newData.date = moment().format('MMMM Do YYYY, h:mm:ss a');
-						accounts.insert(newData, {safe: true}, callback);
+//						accounts.insert(newData, {safe: true}, callback);
+						accounts.insert(newData, callback);
 					});
 				}
 			});
@@ -81,14 +85,16 @@ exports.updateAccount = function(newData, callback)
 		o.email 	= newData.email;
 		o.country 	= newData.country;
 		if (newData.pass == ''){
-			accounts.save(o, {safe: true}, function(err) {
+		//	accounts.save(o, {safe: true}, function(err) {
+			accounts.save(o, function(err) {
 				if (err) callback(err);
 				else callback(null, o);
 			});
 		}	else{
 			saltAndHash(newData.pass, function(hash){
 				o.pass = hash;
-				accounts.save(o, {safe: true}, function(err) {
+		//		accounts.save(o, {safe: true}, function(err) {
+				accounts.save(o, function(err) {
 					if (err) callback(err);
 					else callback(null, o);
 				});
@@ -105,7 +111,8 @@ exports.updatePassword = function(email, newPass, callback)
 		}	else{
 			saltAndHash(newPass, function(hash){
 		        o.pass = hash;
-		        accounts.save(o, {safe: true}, callback);
+		//      accounts.save(o, {safe: true}, callback);
+		        accounts.save(o, callback);
 			});
 		}
 	});
