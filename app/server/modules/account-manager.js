@@ -1,6 +1,7 @@
 
 var crypto 		= require('crypto');
 var moment 		= require('moment');
+var dbName 		= 'node-login';
 
 /* establish the database connection */
 
@@ -9,7 +10,6 @@ try {
   var Server 		= require('mongodb').Server;
   var dbPort 		= 27017;
   var dbHost 		= 'localhost';
-  var dbName 		= 'node-login';
   var db = new MongoDB(dbName, new Server(dbHost, dbPort, {auto_reconnect: true}), {w: 1});
   db.open(function(e, d){
 	if (e) {
