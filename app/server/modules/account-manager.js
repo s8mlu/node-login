@@ -1,24 +1,29 @@
 
 var crypto 		= require('crypto');
-var MongoDB 	= require('mongodb').Db;
-var Server 		= require('mongodb').Server;
 var moment 		= require('moment');
-
-var dbPort 		= 27017;
-var dbHost 		= 'localhost';
-var dbName 		= 'node-login';
 
 /* establish the database connection */
 
-var db = new MongoDB(dbName, new Server(dbHost, dbPort, {auto_reconnect: true}), {w: 1});
+try {
+  var MongoDB 	= require('mongodb').Db;
+  var Server 		= require('mongodb').Server;
+  var dbPort 		= 27017;
+  var dbHost 		= 'localhost';
+  var dbName 		= 'node-login';
+  var db = new MongoDB(dbName, new Server(dbHost, dbPort, {auto_reconnect: true}), {w: 1});
 	db.open(function(e, d){
 	if (e) {
 		console.log(e);
 	}	else{
 		console.log('connected to database :: ' + dbName);
 	}
+  var accounts = db.collection('accounts');
 });
-var accounts = db.collection('accounts');
+} catch (e) {
+  console.log('warning: mongodb failed "' + e + '", fall back to using Nedb');
+  var Nedb = require('nedb'),
+    accounts = new Nedb({ filename: dbName+'.db', autoload: true});
+}
 
 /* login validation methods */
 
@@ -66,7 +71,10 @@ exports.addNewAccount = function(newData, callback)
 						newData.pass = hash;
 					// append date stamp when record was created //
 						newData.date = moment().format('MMMM Do YYYY, h:mm:ss a');
-						accounts.insert(newData, {safe: true}, callback);
+                        if (MongoDB === undefined)
+                          accounts.insert(newData, callback);
+                        else
+                          accounts.insert(newData, {safe: true}, callback);
 					});
 				}
 			});
@@ -81,17 +89,31 @@ exports.updateAccount = function(newData, callback)
 		o.email 	= newData.email;
 		o.country 	= newData.country;
 		if (newData.pass == ''){
-			accounts.save(o, {safe: true}, function(err) {
+            if (MongoDB === undefined) {
+              accounts.save(o, function(err) {
 				if (err) callback(err);
 				else callback(null, o);
-			});
+              });
+            } else {
+		      accounts.save(o, {safe: true}, function(err) {
+				if (err) callback(err);
+				else callback(null, o);
+              });
+            }
 		}	else{
 			saltAndHash(newData.pass, function(hash){
 				o.pass = hash;
-				accounts.save(o, {safe: true}, function(err) {
-					if (err) callback(err);
-					else callback(null, o);
-				});
+                if (MongoDB === undefined) {
+                  accounts.save(o, function(err) {
+                      if (err) callback(err);
+                      else callback(null, o);
+                  });
+                } else {
+                  accounts.save(o, {safe: true}, function(err) {
+                      if (err) callback(err);
+                      else callback(null, o);
+                  });
+                }
 			});
 		}
 	});
@@ -105,7 +127,10 @@ exports.updatePassword = function(email, newPass, callback)
 		}	else{
 			saltAndHash(newPass, function(hash){
 		        o.pass = hash;
-		        accounts.save(o, {safe: true}, callback);
+                if (MongoDB === undefined)
+                  accounts.save(o, callback);
+                else
+                  accounts.save(o, {safe: true}, callback);
 			});
 		}
 	});
