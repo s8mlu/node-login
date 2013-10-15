@@ -82,38 +82,35 @@ exports.addNewAccount = function(newData, callback)
 	});
 }
 
+function saveDb(o, callback) {
+    if (MongoDB === undefined) {
+      accounts.update({user: o.user}, o, function(err) {
+        console.log('saveDb cb ' + JSON.stringify(err));
+        if (err) callback(err);
+        else callback(null, o);
+      });
+    } else {
+      accounts.save(o, {safe: true}, function(err) {
+        if (err) callback(err);
+        else callback(null, o);
+      });
+    }
+}
+
 exports.updateAccount = function(newData, callback)
 {
+    //console.log('updateAccount: ' + JSON.stringify(newData));
 	accounts.findOne({user:newData.user}, function(e, o){
+        if (o === undefined || o === null) { return; } // not found
 		o.name 		= newData.name;
 		o.email 	= newData.email;
 		o.country 	= newData.country;
-		if (newData.pass == ''){
-            if (MongoDB === undefined) {
-              accounts.save(o, function(err) {
-				if (err) callback(err);
-				else callback(null, o);
-              });
-            } else {
-		      accounts.save(o, {safe: true}, function(err) {
-				if (err) callback(err);
-				else callback(null, o);
-              });
-            }
+		if (newData.pass == '') {
+            saveDb(o, callback);
 		}	else{
 			saltAndHash(newData.pass, function(hash){
 				o.pass = hash;
-                if (MongoDB === undefined) {
-                  accounts.save(o, function(err) {
-                      if (err) callback(err);
-                      else callback(null, o);
-                  });
-                } else {
-                  accounts.save(o, {safe: true}, function(err) {
-                      if (err) callback(err);
-                      else callback(null, o);
-                  });
-                }
+                saveDb(o, callback);
 			});
 		}
 	});
@@ -127,10 +124,7 @@ exports.updatePassword = function(email, newPass, callback)
 		}	else{
 			saltAndHash(newPass, function(hash){
 		        o.pass = hash;
-                if (MongoDB === undefined)
-                  accounts.save(o, callback);
-                else
-                  accounts.save(o, {safe: true}, callback);
+                saveDb(o, callback);
 			});
 		}
 	});
