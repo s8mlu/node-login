@@ -69,7 +69,7 @@ exports.addNewAccount = function(newData, callback)
 				}	else{
 					saltAndHash(newData.pass, function(hash){
 						newData.pass = hash;
-					// append date stamp when record was created //
+                        // append date stamp when record was created //
 						newData.date = moment().format('MMMM Do YYYY, h:mm:ss a');
                         if (MongoDB === undefined)
                           accounts.insert(newData, callback);
@@ -85,7 +85,7 @@ exports.addNewAccount = function(newData, callback)
 function saveDb(o, callback) {
     if (MongoDB === undefined) {
       accounts.update({user: o.user}, o, function(err) {
-        console.log('saveDb cb ' + JSON.stringify(err));
+        //console.log('saveDb cb ' + JSON.stringify(err));
         if (err) callback(err);
         else callback(null, o);
       });
