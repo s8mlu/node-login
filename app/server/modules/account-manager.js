@@ -101,7 +101,7 @@ exports.updateAccount = function(newData, callback)
 {
     //console.log('updateAccount: ' + JSON.stringify(newData));
 	accounts.findOne({user:newData.user}, function(e, o){
-        if (o === undefined || o === null) { return; } // not found
+        if (o === undefined || o === null) { console.log("unexpeted error? : " + e); return; } // not found
 		o.name 		= newData.name;
 		o.email 	= newData.email;
 		o.country 	= newData.country;
@@ -134,7 +134,8 @@ exports.updatePassword = function(email, newPass, callback)
 
 exports.deleteAccount = function(id, callback)
 {
-	accounts.remove({_id: getObjectId(id)}, callback);
+    // console.log("deleteAccount: " + id);
+	accounts.remove({_id: (MongoDB === undefined ? id : getObjectId(id))}, callback);
 }
 
 exports.getAccountByEmail = function(email, callback)
