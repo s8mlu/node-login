@@ -2,8 +2,6 @@
 var CT = require('./modules/country-list');
 var AM = require('./modules/account-manager');
 var EM = require('./modules/email-dispatcher');
-var SETTINGS = require('./modules/email-settings-mine');
-
 module.exports = function(app) {
 
 // main login page //
@@ -17,8 +15,7 @@ module.exports = function(app) {
 			AM.autoLogin(req.cookies.user, req.cookies.pass, function(o){
 				if (o != null){
 				    req.session.user = o;
-//					res.redirect('/home');
-					res.redirect(SETTINGS.appHomeUrl);
+					res.redirect('/secure/home');
 				}	else{
 					res.render('login', { title: 'Hello - Please Login To Your Account' });
 				}
@@ -50,7 +47,7 @@ module.exports = function(app) {
 	    }   else{
 			res.render('home', {
 				title : 'Account Settings',
-                backUrl: SETTINGS.appHomeUrl,
+                backUrl: '/secure/home',
 				countries : CT,
 				udata : req.session.user
 			});

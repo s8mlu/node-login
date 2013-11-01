@@ -1,6 +1,5 @@
-
 $(document).ready(function(){
-	
+
 	var lv = new LoginValidator();
 	var lc = new LoginController();
 
@@ -17,18 +16,18 @@ $(document).ready(function(){
 			}
 		},
 		success	: function(responseText, status, xhr, $form){
-			if (status == 'success') window.location.href = '/secure/rover';
+			if (status == 'success') window.location.href = "/secure/home";
 		},
 		error : function(e){
             lv.showLoginError('Login Failure', 'Please check your username and/or password');
 		}
-	}); 
+	});
 	$('#user-tf').focus();
-	
+
 // login retrieval form via email //
-	
+
 	var ev = new EmailValidator();
-	
+
 	$('#get-credentials-form').ajaxForm({
 		url: '/lost-password',
 		beforeSubmit : function(formData, jqForm, options){
@@ -47,5 +46,5 @@ $(document).ready(function(){
 			ev.showEmailAlert("Sorry. There was a problem, please try again later.");
 		}
 	});
-	
+
 })
