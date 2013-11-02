@@ -15,7 +15,10 @@ module.exports = function(app) {
 			AM.autoLogin(req.cookies.user, req.cookies.pass, function(o){
 				if (o != null){
 				    req.session.user = o;
-					res.redirect('/secure/home');
+                    console.log("node-login router: " + req.url);
+                    var url_parts = require("url").parse(req.url, true);
+                    var query = url_parts.query;
+					res.redirect(query.pg || '/secure/home');
 				}	else{
 					res.render('login', { title: 'Hello - Please Login To Your Account' });
 				}
