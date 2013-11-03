@@ -16,7 +16,8 @@ $(document).ready(function(){
 			}
 		},
 		success	: function(responseText, status, xhr, $form){
-			if (status == 'success') window.location.href = "/secure/home";
+            var x = this.url.indexOf("/?pg=");
+            window.location.href = x === -1 ? '/secure/home' : this.url.substring(x + 5);
 		},
 		error : function(e){
             lv.showLoginError('Login Failure', 'Please check your username and/or password');
