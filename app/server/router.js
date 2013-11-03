@@ -5,13 +5,13 @@ var EM = require('./modules/email-dispatcher');
 module.exports = function(app) {
 
 // main login page //
-        function loginSuccess(req, res, o) {
-                req.session.user = o;
-                console.log("node-login router: " + req.url);
-                var url_parts = require("url").parse(req.url, true);
-                var query = url_parts.query;
-                res.redirect(query.pg || '/secure/home');
-        }
+    function loginSuccess(req, res, o) {
+        req.session.user = o;
+        console.log("node-login router: " + req.url);
+        var url_parts = require("url").parse(req.url, true);
+        var query = url_parts.query;
+        res.redirect(query.pg || '/secure/home');
+    }
 
 	app.get('/', function(req, res){
 	// check if the user's credentials are saved in a cookie //
@@ -21,7 +21,7 @@ module.exports = function(app) {
 	// attempt automatic login //
 			AM.autoLogin(req.cookies.user, req.cookies.pass, function(o){
 				if (o != null){
-                                        loginSuccess(req, res, o);
+                    loginSuccess(req, res, o);
 				}	else{
 					res.render('login', { title: 'Hello - Please Login To Your Account' });
 				}
@@ -38,7 +38,7 @@ module.exports = function(app) {
 					res.cookie('user', o.user, { maxAge: 900000 });
 					res.cookie('pass', o.pass, { maxAge: 900000 });
 				}
-                                loginSuccess(req, res, o);
+                    loginSuccess(req, res, o);
 			}
 		});
 	});
