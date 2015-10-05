@@ -30,11 +30,11 @@ module.exports = function(app) {
 	});
 
 	app.post('/', function(req, res){
-		AM.manualLogin(req.param('user'), req.param('pass'), function(e, o){
+		AM.manualLogin(req.body['user'], req.body['pass'], function(e, o){
 			if (!o){
 				res.send(e, 400);
 			}	else{
-				if (req.param('remember-me') == 'true'){
+				if (req.body['remember-me'] == 'true'){
 					res.cookie('user', o.user, { maxAge: 900000 });
 					res.cookie('pass', o.pass, { maxAge: 900000 });
 				}
@@ -60,13 +60,13 @@ module.exports = function(app) {
 	});
 
 	app.post('/home', function(req, res){
-		if (req.param('user') != undefined) {
+		if (req.body['user'] != undefined) {
 			AM.updateAccount({
-				user 		: req.param('user'),
-				name 		: req.param('name'),
-				email 		: req.param('email'),
-				country 	: req.param('country'),
-				pass		: req.param('pass')
+				user 		: req.body['user'],
+				name 		: req.body['name'],
+				email 		: req.body['email'],
+				country 	: req.body['country'],
+				pass		: req.body['pass']
 			}, function(e, o){
 				if (e){
 					res.send('error-updating-account', 400);
@@ -80,7 +80,7 @@ module.exports = function(app) {
 					res.send('ok', 200);
 				}
 			});
-		}	else if (req.param('logout') == 'true'){
+		}	else if (req.body['logout'] == 'true'){
 			res.clearCookie('user');
 			res.clearCookie('pass');
 			req.session.destroy(function(e){ res.send('ok', 200); });
@@ -95,11 +95,11 @@ module.exports = function(app) {
 
 	app.post('/signup', function(req, res){
 		AM.addNewAccount({
-			name 	: req.param('name'),
-			email 	: req.param('email'),
-			user 	: req.param('user'),
-			pass	: req.param('pass'),
-			country : req.param('country')
+			name 	: req.body['name'],
+			email 	: req.body['email'],
+			user 	: req.body['user'],
+			pass	: req.body['pass'],
+			country : req.body['country']
 		}, function(e){
 			if (e){
 				res.send(e, 400);
@@ -113,7 +113,7 @@ module.exports = function(app) {
 
 	app.post('/lost-password', function(req, res){
 	// look up the user's account via their email //
-		AM.getAccountByEmail(req.param('email'), function(o){
+		AM.getAccountByEmail(req.body['email'], function(o){
 			if (o){
 				res.send('ok', 200);
 				EM.dispatchResetPasswordLink(o, function(e, m){
@@ -147,7 +147,7 @@ module.exports = function(app) {
 	});
 
 	app.post('/reset-password', function(req, res) {
-		var nPass = req.param('pass');
+		var nPass = req.body['pass'];
 	// retrieve the user's email from the session to lookup their account and reset password //
 		var email = req.session.reset.email;
 	// destory the session immediately after retrieving the stored email //
