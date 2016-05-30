@@ -12,7 +12,7 @@ var app = express();
 app.configure(function(){
 	app.set('port', 8080);
 	app.set('views', __dirname + '/app/server/views');
-	app.set('view engine', 'jade');
+	app.set('view engine', 'pug');
 	app.locals.pretty = true;
 //	app.use(express.favicon());
 //	app.use(express.logger('dev'));

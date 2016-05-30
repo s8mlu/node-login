@@ -17,7 +17,7 @@
 	"dependencies": {
 		"express": "3.0.6",
 		"stylus": "0.31.0",
-		"jade": "0.27.7",
+		"pug": "*",
 		"nedb": "0.8.9",
 		"moment" : "1.7.2",
 		"emailjs": "0.3.3"
